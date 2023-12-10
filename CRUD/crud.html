@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD_-FORM____ </title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    
+    <div class="container">
+        <h1>CRUD Operations</h1>
+        <form id="form">
+            <div><label for="name">Name</label><br>
+                <input type="text" name="name" id="name" required>
+            </div>
+            <div><label for="email">Email</label><br>
+                <input type="email" name="email" id="email" required>
+            </div>
+            <div><label for="phone">Phone Number</label><br>
+                <input type="tel" name="phone" id="phone" required>
+            </div>
+            <div><label for="address">Place</label><br>
+                <input type="text" name="address" id="address" required>
+            </div>
+        </form>
+        <div class="buttons">
+            <button id="add">ADD</button>
+        </div>
+        <hr>
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <!-- <th>ID</th> -->
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Place</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+
+            </tbody>
+        </table>
+        <div id="dashboard">
+            <div id="dashboardBody">
+                <form id="updateForm">
+                    <label for="updateName">New Name:</label><br>
+                    <input type="text" name="updateName" id="updateName" required>
+                    <label for="updateEmail">New Email:</label><br>
+                    <input type="email" name="updateEmail" id="updateEmail" required>
+                    <label for="updatePhone">New Phone:</label><br>
+                    <input type="tel" name="updatePhone" id="updatePhone" required>
+                    <label for="updateAddress">New Address:</label><br>
+                    <input type="tel" name="updateAddress" id="updateAddress" required>
+                    <button type="button" id="updateSubmit">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getFirestore, collection, doc, addDoc, getDocs, updateDoc, deleteDoc} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwonxOJNeFlaCzc70gsZNSS26Ft1Z8oGg",
+            authDomain: "crud-operations-93683.firebaseapp.com",
+            projectId: "crud-operations-93683",
+            storageBucket: "crud-operations-93683.appspot.com",
+            messagingSenderId: "375309715738",
+            appId: "1:375309715738:web:bc6439e8b54c7646a184a3",
+            measurementId: "G-68ZV75MSWT"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const updateForm = document.getElementById("updateForm");
+        let currentDocId;
+        // Add Person
+        const addPerson = document.getElementById("add");
+        addPerson.addEventListener("click", async () => {
+            // Get values from form fields
+            const nameElement = document.getElementById("name");
+            const emailElement = document.getElementById("email");
+            const phoneElement = document.getElementById("phone");
+            const addressElement = document.getElementById("address");
+
+            // Check if elements are found
+            if (!nameElement || !emailElement || !phoneElement || !addressElement) {
+                console.log("Form elements not found.");
+                return;
+            }
+
+            const nameValue = nameElement.value.trim();
+            const emailValue = emailElement.value.trim();
+            const phoneValue = phoneElement.value.trim();
+            const addressValue = addressElement.value.trim();
+
+            // Validate form fields
+            if (!nameValue || !emailValue || !phoneValue || !addressValue) {
+                console.log("Please fill in all the fields.");
+                return;
+            }
+
+            try {
+                // Add document to Firestore
+                const docRef = await addDoc(collection(db, "person"), {
+                    name: nameValue,
+                    email: emailValue,
+                    phone: phoneValue,
+                    address: addressValue
+                });
+
+                console.log("Document written with ID: ", docRef.id);
+                clearForm();
+                fetchData();
+            } catch (error) {
+                console.error(error);
+            }
+        });
+        // Fetch Data
+        function fetchData() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            getDocs(collection(db, 'person')).then((querySnapshot) => {
+                querySnapshot.docs.forEach((doc) => {
+                    const row = tableBody.insertRow();
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    const cell3 = row.insertCell(2);
+                    const cell4 = row.insertCell(3);
+
+                    // cell1.textContent = doc.id;
+                    cell1.textContent = doc.data().name;
+                    cell2.textContent = doc.data().email;
+                    cell3.textContent = doc.data().phone;
+                    cell4.textContent = doc.data().address;
+
+                    // Adds update and delete buttons to each row
+                    const updateButton = document.createElement('button');
+                    updateButton.textContent = 'Update';
+                    updateButton.addEventListener('click', () => {
+                        //fills the form to  current values
+                        document.getElementById('updateName').value = doc.data().name;
+                        document.getElementById('updateEmail').value = doc.data().email;
+                        document.getElementById('updatePhone').value = doc.data().phone;
+                        document.getElementById('updateAddress').value = doc.data().address;
+
+                        currentDocId = doc.id;
+                        scrollToSection('updateForm');
+                    });
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.addEventListener('click', () => {
+                        const confirmation = confirm('Are you sure you want to delete this record?');
+                        if (confirmation) {
+                            deleteDocument(doc.id);
+                        }
+                    });
+
+                    cell4.appendChild(updateButton);
+                    cell4.appendChild(deleteButton);
+                });
+            }).catch((error) => {
+                console.error('Error fetching documents: ', error);
+            });
+        }
+        // Clear Form
+        function clearForm() {
+            const nameElement = document.getElementById("name");
+            const emailElement = document.getElementById("email");
+            const phoneElement = document.getElementById("phone");
+            const addressElement = document.getElementById("address");
+
+            // Check if elements are found
+            if (!nameElement || !emailElement || !phoneElement || !addressElement) {
+                console.log("Form elements not found.");
+                return;
+            }
+
+            nameElement.value = '';
+            emailElement.value = '';
+            phoneElement.value = '';
+            addressElement.value = '';
+        }
+        const updateSubmitButton = document.getElementById('updateSubmit');
+        updateSubmitButton.addEventListener('click', async () => {
+            const updateName = document.getElementById('updateName').value.trim();
+            const updateEmail = document.getElementById('updateEmail').value.trim();
+            const updatePhone = document.getElementById('updatePhone').value.trim();
+            const updateAddress = document.getElementById('updateAddress').value.trim();
+
+            if (!updateName || !updateEmail || !updatePhone || !updateAddress) {
+                console.log("Please fill in all the fields.");
+                return;
+            }
+
+            try {
+                // Update document in Firestore using the stored ID
+                await updateDoc(doc(db, 'person', currentDocId), {
+                    name: updateName,
+                    email: updateEmail,
+                    phone: updatePhone,
+                    address: updateAddress
+                });
+
+                console.log('Document updated successfully');
+                fetchData();
+                clearForm()
+                location.reload()
+            } catch (error) {
+                console.error(error);
+            }
+        });
+        fetchData(); // Initial data fetch
+        // Function to delete a document by ID
+        async function deleteDocument(documentId) {
+            try {
+                // Delete document from Firestore
+                await deleteDoc(doc(db, 'person', documentId));
+                console.log('Document deleted successfully');
+                fetchData(); 
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        //to scroll down to the 
+        function scrollToSection(sectionId) {
+            var element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+
+</html>

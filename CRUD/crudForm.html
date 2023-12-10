@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD FORM </title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div class="container">
+        <form id="form">
+            <div><label for="name">Name</label><br>
+                <input type="text" name="name" id="name" required>
+            </div>
+            <div><label for="email">Email</label><br>
+                <input type="email" name="email" id="email" required>
+            </div>
+            <div><label for="phone">Phone Number</label><br>
+                <input type="tel" name="phone" id="phone" required>
+            </div>
+            <div><label for="address">Place</label><br>
+                <input type="text" name="address" id="address" required>
+            </div>
+
+        </form>
+        <div class="buttons">
+            <button id="add">ADD</button>
+            <button id="update">UPDATE</button>
+            <button id="delete">DELETE</button>
+        </div>
+        <hr>
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+
+            </tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDwonxOJNeFlaCzc70gsZNSS26Ft1Z8oGg",
+            authDomain: "crud-operations-93683.firebaseapp.com",
+            projectId: "crud-operations-93683",
+            storageBucket: "crud-operations-93683.appspot.com",
+            messagingSenderId: "375309715738",
+            appId: "1:375309715738:web:bc6439e8b54c7646a184a3",
+            measurementId: "G-68ZV75MSWT"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        //buttons
+        const addPerson = document.getElementById("add")
+        const updatePerson = document.getElementById("update")
+        const deletePerson = document.getElementById("delete")
+
+        //fields
+        const name = document.getElementById("name")
+        const email = document.getElementById("email")
+        const phone = document.getElementById("phone")
+        const address = document.getElementById("address")
+
+        //Add Person
+        addPerson.addEventListener("click", async () => {
+            try {
+                const docRef = await addDoc(collection(db, "person"), {
+                    name: name.value,
+                    email: email.value,
+                    phone: phone.value,
+                    address: address.value
+                });
+                console.log("Document written with ID: ", docRef.id);
+                clearForm();
+                fetchData();
+            } catch (error) {
+                console.log(error)
+            }
+        });
+
+        // Fetch Data
+        function fetchData() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            db.collection('person').get().then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const row = tableBody.insertRow();
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    const cell3 = row.insertCell(2);
+
+                    cell1.textContent = doc.id;
+                    cell2.textContent = doc.data().name;
+                    cell3.textContent = doc.data().email;
+                });
+            }).catch((error) => {
+                console.error('Error fetching documents: ', error);
+            });
+        }
+
+        // Clear Form
+        function clearForm() {
+            name.value = '';
+            email.value = '';
+            phone.value = '';
+            address.value = '';
+        }
+
+        fetchData(); // Initial data fetch
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form id="signUpForm" name="form">
+            <h1>Create Account</h1>
+            <div>
+                <label for="firstName">First Name </label><br>
+                <input type="text" name="firstName" id="firstName" required>
+                <span id="firstNameError" class="error"></span>
+            </div>
+            <div>
+                <label for="lastName">Last Name </label><br>
+                <input type="text" name="lastName" id="lastName" required>
+                <span id="lastNameError" class="error"></span>
+            </div>
+            <div>
+                <label for="email">Email </label><br>
+                <input type="email" name="email" id="email" required>
+                <span id="emailError" class="error"></span>
+            </div>
+            <div>
+                <label for="phone">Phone </label><br>
+                <input type="tel" name="phone" id="phone" required>
+                <span id="phoneError" class="error"></span>
+            </div>
+            <div>
+                <label for="dob">Date of Birth </label><br>
+                <input type="date" name="dob" id="dob" required>
+                <span id="dobError" class="error"></span>
+            </div>
+            <div>
+                <label for="password">Password</label><br>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <div>
+                <label for="cPassword">Confirm Password </label><br>
+                <input type="password" name="cPassword" id="cPassword" required>
+                <span id="passwordError" class="error"></span>
+            </div>
+            <button type="submit" onclick="validateForm()">Sign Up</button>
+            <p>Already have an account <a href="index.html">Click Here to Sign In</a></p>
+        </form>
+
+        <script>
+            function validateForm() {
+                const firstName = document.forms["form"]["firstName"].value;
+                const lastName = document.forms["form"]["lastName"].value;
+                const email = document.forms["form"]["email"].value;
+                const phone = document.forms["form"]["phone"].value;
+                const dob = document.forms["form"]["dob"].value;
+                const password = document.forms["form"]["password"].value;
+                const cPassword = document.forms["form"]["cPassword"].value;
+
+                // Clear previous error messages
+                clearErrors();
+
+                // Validate First Name
+                if (firstName.length < 3 || !/^[a-zA-Z]+$/.test(firstName)) {
+                    document.getElementById("firstNameError").innerText = "Invalid First Name";
+                    return false;
+                }
+
+                // Validate Last Name
+                if (lastName.length < 3 || !/^[a-zA-Z]+$/.test(lastName)) {
+                    document.getElementById("lastNameError").innerText = "Invalid Last Name";
+                    return false;
+                }
+
+                // Validate Email
+                if (!isValidEmail(email)) {
+                    document.getElementById("emailError").innerText = "Invalid Email";
+                    return false;
+                }
+
+                // Validate Phone
+                if (!/^\d{10}$/.test(phone)) {
+                    document.getElementById("phoneError").innerText = "Phone number must be 10 digits";
+                    return false;
+                }
+
+                // Validate Date of Birth
+                const today = new Date();
+                const dobDate = new Date(dob);
+                const age = today.getFullYear() - dobDate.getFullYear();
+
+                if (age < 10) {
+                    document.getElementById("dobError").innerText = "Must be at least 10 years old";
+                    return false;
+                }
+
+                // Validate Password
+                if (password.length < 6) {
+                    document.getElementById("passwordError").innerText = "Password must be at least 6 characters";
+                    return false;
+                }
+
+                // Validate Confirm Password
+                if (password !== cPassword) {
+                    document.getElementById("passwordError").innerText = "Passwords do not match";
+                    return false;
+                }
+
+                // Form is valid, you can submit it
+                alert("Form submitted successfully!");
+            }
+
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            function clearErrors() {
+                const errorElements = document.querySelectorAll(".error");
+                errorElements.forEach(element => {
+                    element.innerText = "";
+                });
+            }
+        </script>
+    </div>
+</body>
+
+</html>

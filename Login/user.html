@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Home</title>
+</head>
+
+<body>
+
+    <center>
+        <div class="container">
+            <div id="userDetails"></div>
+            <button id="logout">Logout</button>
+        </div>
+    </center>
+    <script type="module" defer>
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAI1nt0P9R22S2mVHum_QuhGT1VDv4dVVo",
+            authDomain: "authentication-abfe0.firebaseapp.com",
+            projectId: "authentication-abfe0",
+            storageBucket: "authentication-abfe0.appspot.com",
+            messagingSenderId: "139689547021",
+            appId: "1:139689547021:web:22d397cde8a08f93bacc44",
+            measurementId: "G-W7H14MLBYB"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+
+        // Retrieve user details from session storage
+        const userId = sessionStorage.getItem('userId');
+        const userEmail = sessionStorage.getItem('userEmail');
+        
+
+        // Display user details
+        const userDetailsDiv = document.getElementById("userDetails");
+        userDetailsDiv.innerHTML = `
+        <p>Welcome, ${userEmail}!</p>
+    `;
+
+        // Logout function
+
+        document.getElementById("logout").addEventListener("click", () => {
+            auth.signOut().then(() => {
+                sessionStorage.clear();
+                window.location.href = "index.html";
+            }).catch((error) => {
+                console.error("Error signing out:", error);
+            });
+        })
+
+    </script>
+
+</body>
+
+</html>

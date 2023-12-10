@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css" /> -->
+        <link rel="stylesheet" href="./css/style.css">
+   <style>
+        h1{
+        color: white;
+        text-align: center;
+    }
+    </style>
+</head>
+
+<body>
+    <p id="err"> </p>
+    <div class="container">
+        <form id="signInForm">
+            <h1>Sign In</h1>
+            <div>
+                <label for="email">Email </label><br>
+                <input type="email" name="email" id="email" required>
+            </div>
+            <div>
+                <label for="password">Password</label><br>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <button type="submit">Sign In</button>
+            <p>Don't have an account <a href="createAccount.html">Click Here to create One</a></p>
+        </form>
+    </div>
+    <!-- <script src="signIn.js"></script> -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc,getDoc,doc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAI1nt0P9R22S2mVHum_QuhGT1VDv4dVVo",
+            authDomain: "authentication-abfe0.firebaseapp.com",
+            projectId: "authentication-abfe0",
+            storageBucket: "authentication-abfe0.appspot.com",
+            messagingSenderId: "139689547021",
+            appId: "1:139689547021:web:22d397cde8a08f93bacc44",
+            measurementId: "G-W7H14MLBYB"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth();
+        const db = getFirestore();
+        const signUpForm = document.getElementById("signUpForm");
+
+        signInForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            try {
+                // Sign in the user
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // Display success message or redirect to another page
+                const docRef = doc( db,"userData","GAr55qImQJnSarxk24DB")
+                const docSnap = await getDoc(docRef);
+
+                if(docSnap.exists()){
+                    console.log("Document data",docSnap.data())
+                }else{
+                    console.log("no such element")
+                }
+
+                console.log("success")
+                sessionStorage.setItem('userId', user.uid);
+                sessionStorage.setItem('userEmail', user.email);
+                console.log(user.uid);
+                // window.location.href = "user.html"
+
+            } catch (error) {
+                console.error("Error signing in:", error.code, error.message);
+                document.getElementById("err").innerText = "Invalid email id or Password";
+            }
+        });
+
+        
+
+    </script>
+</body>
+
+</html>

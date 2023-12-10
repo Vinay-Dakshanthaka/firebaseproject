@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script> -->
+    <style>
+        .accountCreated {
+            text-align: center;
+            width: fit-content;
+            height: fit-content;
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background-color: lightgreen;
+            border: none;
+            color: white;
+            border-radius: 8px;
+            position: absolute;
+            top: 50%;
+            left: 80%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="accountCreated">
+        Account Created Successfully
+    </div>
+    <div class="container">
+        <form id="signUpForm">
+            <div>
+                <label for="firstName">First Name</label><br>
+                <input type="text" name="firstName" id="firstName" required>
+            </div>
+            <div>
+                <label for="lastName">Last Name</label><br>
+                <input type="text" name="lastName" id="lastName" required>
+            </div>
+            <div>
+                <label for="email">Email </label><br>
+                <input type="email" name="email" id="email" required>
+            </div>
+            <div>
+                <label for="phone">Phone</label><br>
+                <input type="tel" name="phone" id="phone" required>
+            </div>
+            <div>
+                <label for="password">Password</label><br>
+                <input type="password" name="password" id="password" required>
+            </div>
+            <div>
+                <label for="cPassword">Confirm Password </label><br>
+                <input type="password" name="cPassword" id="cPassword" required>
+            </div>
+            <button type="submit">Sign Up</button>
+            <p>Already have an account <a href="index.html">Click Here to Sign In</a></p>
+        </form>
+    </div>
+    <!-- <script src="signUp.js"></script> -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth,createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js" ;
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAI1nt0P9R22S2mVHum_QuhGT1VDv4dVVo",
+            authDomain: "authentication-abfe0.firebaseapp.com",
+            projectId: "authentication-abfe0",
+            storageBucket: "authentication-abfe0.appspot.com",
+            messagingSenderId: "139689547021",
+            appId: "1:139689547021:web:22d397cde8a08f93bacc44",
+            measurementId: "G-W7H14MLBYB"
+        };
+
+        const signUpForm = document.getElementById("signUpForm")
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig)
+
+        const db = firebase.firestore()
+        const auth = getAuth();
+        signUpForm.addEventListener("submit", (e) => {
+            e.preventDefault()
+            const firstName = document.getElementById("firstName").value
+            const lastName = document.getElementById("lastName").value
+            const email = document.getElementById("email").value
+            const phone = document.getElementById("phone").value
+            const password = document.getElementById("password").value
+            db.collection("userData").add({
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                phone: phone
+            }).then((ref) => {
+                console.log(ref)
+            }).catch((error) => {
+                console.log(error)
+            })
+
+                createUserWithEmailAndPassword(auth, email, password)
+              .then((userCredential) => {
+                const user = userCredential.user;
+                console.log("user created successfully");
+              })
+              .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode,errorMessage);
+                // ..
+              });
+        })
+    </script>
+
+</body>
+
+</html>

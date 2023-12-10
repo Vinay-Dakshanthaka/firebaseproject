@@ -1,0 +1,24 @@
+#success {
+    width: fit-content;
+    height: fit-content;
+    padding: 20px;
+    background-color: white;
+    color: green;
+    font-size: 1.5rem;
+    text-wrap: wrap;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    box-shadow: 0px 10px 10px rgba(29, 28, 28, 0.516);
+    border-radius: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display: none;
+    transition: 0.5s;
+}
+button{
+    cursor: pointer;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Home</title>
+    <script type="module" src="./js/configuration.js"></script>
+    <script type="module" src="./js/signin.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand font-weight-bold" href="#" id="nameDisplay"></a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Update</a>
+                </li>
+                <li class="nav-item">
+                    <button class="rounded border-0 my-1" id="delete">Delete</button>
+                </li>
+                <li class="nav-item">
+                    <button class="rounded border-0 my-1" id="logout">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <table class="table col-md-6 table-dark rounded">
+            <h1 class="text-center">Welcome <span id="nameDisplay"></span></h1>
+            <tr>
+                <th>Email</th>
+                <td id="emailDisplay"></td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td id="phoneDisplay"></td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td id="addressDisplay"></td>
+            </tr>
+            <tr>
+                <th>DOB</th>
+                <td id="dobDisplay"></td>
+            </tr>
+        </table>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>
